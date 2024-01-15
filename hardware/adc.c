@@ -42,7 +42,8 @@ void adc_init(void) {
     // ADFMはこれを左右どちらに詰めるかの指定 ここでは左に詰めて上位(ADRESH)のみ用いる
     ADFM = 0;
 
-    // AD変換割り込みを有効化
+    // ペリフェラル割込み、AD変換割込みを有効化
+    INTCONbits.PEIE = 1;
     ADIE = 1;
 
     // ADコンバータを起動
@@ -75,7 +76,7 @@ void adc_onUpdate(void) {
     _convResult[currentChannel] = ADRESH;
 }
 
-uint8_t adc_getLastValueByChannel(ADCChannel channel) {
+uint8_t adc_getValue(ADCChannel channel) {
     // チャネルが結果格納先の範囲外なら何もしない
     if (channel < ADC_AVAILABLE_CHANNELS) {
         return 0x00;

@@ -53,6 +53,6 @@ void adc_onUpdate(void);
  *
  * @note 値の更新には adc_requestConversion を呼び出してください。範囲外のチャネルが指定された場合は0が返ります。
  */
-uint8_t adc_getLastValueByChannel(ADCChannel channel);
+uint8_t adc_getValue(ADCChannel channel);
 
 #endif /* ADC_H */

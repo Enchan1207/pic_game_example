@@ -1,6 +1,7 @@
 //
 // ドットマトリクスディスプレイの制御
 //
+#include <hardware/adc.h>
 #include <hardware/display.h>
 #include <stdbool.h>
 #include <string.h>
@@ -14,6 +15,9 @@ void main(void) {
 
     // LCD制御機能を無効化
     LCDEN = 0;
+
+    // ADCを初期化
+    adc_init();
 
     // ディスプレイモジュールを初期化
     display_init();
@@ -30,34 +34,23 @@ void main(void) {
     // 描画バッファ取得
     uint8_t* displayBuffer = display_getDrawBuffer();
 
-    // オブジェクトを初期化
-    for (uint8_t i = 0; i < RENDERER_MAX_OBJECT; i++) {
-        struct RenderObject* obj = renderObjects + i;
-        obj->isVisible = true;
-        obj->sx = i >> 1;
-        obj->sy = i;
-        obj->width = 1;
-        obj->height = 1;
-    }
+    // オブジェクト初期化
+    struct RenderObject* obj = renderObjects;
+    obj->isVisible = true;
+    obj->height = 1;
 
     // 表示を開始
     display_setVisible(true);
 
-    // タイマ6を計時機として構成し、開始
-    // ソースクロック1MHz, 分周比64 -> 64usごとにカウントアップ
-    T6CONbits.T6CKPS = 3;
-    PR6 = 0xFF;
-    T6CONbits.TMR6ON = 1;
-    TMR6IE = 1;
-
-    // オブジェクトをレンダリング
-    renderer_renderObjects(displayBuffer);
-
-    // レンダリングが終了したところで止めてTMRレジスタをディスプレイバッファに書き出す
-    T6CONbits.TMR6ON = 0;
-    displayBuffer[6] = TMR6IF;
-    displayBuffer[7] = TMR6;
-
     while (true) {
+        // AD変換リクエスト
+        adc_requestConversion(DistanceSensor);
+
+        // オブジェクトをレンダリング
+        renderer_renderObjects(displayBuffer);
+
+        // 最後に取得した値を反映
+        uint8_t distance = adc_getValue(DistanceSensor);
+        obj->width = distance >> 6;
     }
 }

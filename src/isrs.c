@@ -5,6 +5,8 @@
 #include <hardware/display.h>
 #include <xc.h>
 
+#include "gametick.h"
+
 void __interrupt() Interrupt_interrupt(void) {
     // ディスプレイ描画更新タイマ
     if (TMR0IF) {
@@ -16,5 +18,11 @@ void __interrupt() Interrupt_interrupt(void) {
     if (ADIF) {
         adc_onUpdate();
         ADIF = 0;
+    }
+
+    // ゲームティック
+    if (TMR2IF) {
+        gametick_set();
+        TMR2IF = 0;
     }
 }

@@ -52,8 +52,7 @@ void distsens_requireUpdate(void) {
     adc_requestConversion(DistanceSensor);
 }
 
-uint16_t distsens_getDistance(void) {
+void distsens_getDistance(uint16_t* distance) {
     uint8_t adcResult = adc_getValue(DistanceSensor);
-    uint16_t distance = _distanceTable[adcResult];
-    return distance;
+    *distance = _distanceTable[adcResult];
 }

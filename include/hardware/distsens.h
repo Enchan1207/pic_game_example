@@ -20,10 +20,10 @@ void distsens_requireUpdate(void);
 
 /**
  * @brief 距離センサの値を取得する
+ * @param distance 距離格納先
  *
- * @return uint16_t 測距結果
  * @note 最後にAD変換した際の結果から距離を算出します。更新するには `distsens_requireUpdate` を呼び出してください。
  */
-uint16_t distsens_getDistance(void);
+void distsens_getDistance(uint16_t* distance);
 
 #endif /* DISTSENS_H */

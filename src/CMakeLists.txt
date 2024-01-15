@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.21)
 add_executable(app)
 target_sources(app PRIVATE
     config.c
+    gametick.c
     isrs.c
     main.c
     renderer.c

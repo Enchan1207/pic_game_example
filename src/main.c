@@ -1,6 +1,7 @@
 //
 // ドットマトリクスディスプレイの制御
 //
+#include <hardware/button.h>
 #include <hardware/display.h>
 #include <hardware/distsens.h>
 #include <hardware/joystick.h>
@@ -16,7 +17,7 @@ void main(void) {
 
     // LCD制御機能を無効化
     LCDEN = 0;
-
+  
     // 距離センサを初期化
     distsens_init();
 
@@ -37,7 +38,7 @@ void main(void) {
 
     // 描画バッファ取得
     uint8_t* displayBuffer = display_getDrawBuffer();
-
+  
     // 表示を開始
     display_setVisible(true);
 

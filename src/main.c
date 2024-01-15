@@ -1,8 +1,8 @@
 //
 // ドットマトリクスディスプレイの制御
 //
-#include <hardware/adc.h>
 #include <hardware/display.h>
+#include <hardware/distsens.h>
 #include <stdbool.h>
 #include <string.h>
 #include <xc.h>
@@ -16,8 +16,8 @@ void main(void) {
     // LCD制御機能を無効化
     LCDEN = 0;
 
-    // ADCを初期化
-    adc_init();
+    // 距離センサを初期化
+    distsens_init();
 
     // ディスプレイモジュールを初期化
     display_init();
@@ -43,14 +43,14 @@ void main(void) {
     display_setVisible(true);
 
     while (true) {
-        // AD変換リクエスト
-        adc_requestConversion(DistanceSensor);
+        // 距離センサ値の更新を要求
+        distsens_requireUpdate(DistanceSensor);
 
         // オブジェクトをレンダリング
         renderer_renderObjects(displayBuffer);
 
         // 最後に取得した値を反映
-        uint8_t distance = adc_getValue(DistanceSensor);
-        obj->width = distance >> 6;
+        uint16_t distance = distsens_getDistance();
+        obj->width = distance >> 13;
     }
 }

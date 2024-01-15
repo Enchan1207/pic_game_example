@@ -38,39 +38,35 @@ void main(void) {
     // 描画バッファ取得
     uint8_t* displayBuffer = display_getDrawBuffer();
 
-    // オブジェクト初期化
-    struct RenderObject* distobj = renderObjects;
-    struct RenderObject* joyXobj = renderObjects + 1;
-    struct RenderObject* joyYobj = renderObjects + 2;
-    distobj->isVisible = true;
-    joyXobj->isVisible = true;
-    joyYobj->isVisible = true;
-    distobj->height = 1;
-    joyXobj->height = 1;
-    joyYobj->height = 1;
-    joyXobj->sy = 1;
-    joyYobj->sy = 2;
-
     // 表示を開始
     display_setVisible(true);
 
+    // 格納先
+    int8_t stickX = 0;
+    int8_t stickY = 0;
+    uint16_t distance = 0;
+
+    // オブジェクト初期化
+    struct RenderObject* object = renderObjects;
+    object->isVisible = true;
+    object->width = 1;
+    object->height = 1;
+
     while (true) {
+        // オブジェクトをレンダリング
+        memset(displayBuffer, 0x00, 8);
+        renderer_renderObjects(displayBuffer);
+
         // 各ペリフェラルの更新を要求
         distsens_requireUpdate();
         joystick_requireUpdate();
 
-        // オブジェクトをレンダリング
-        renderer_renderObjects(displayBuffer);
+        // 値を更新
+        joystick_getPosition(&stickX, &stickY);
+        distsens_getDistance(&distance);
 
-        // ジョイスティックの値を反映
-        int8_t x = 0;
-        int8_t y = 0;
-        joystick_getPosition(&x, &y);
-        joyXobj->width = x;
-        joyYobj->width = y;
-
-        // 距離センサの値を反映
-        uint16_t distance = distsens_getDistance();
-        distobj->width = distance >> 13;
+        // 移動
+        object->sx = (stickX + 7) >> 1;
+        object->sy = (stickY + 7) >> 1;
     }
 }

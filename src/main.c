@@ -3,6 +3,8 @@
 //
 #include <hardware/button.h>
 #include <hardware/display.h>
+#include <hardware/distsens.h>
+#include <hardware/joystick.h>
 #include <stdbool.h>
 #include <string.h>
 #include <xc.h>
@@ -15,9 +17,12 @@ void main(void) {
 
     // LCD制御機能を無効化
     LCDEN = 0;
+  
+    // 距離センサを初期化
+    distsens_init();
 
-    // タクトスイッチ初期化
-    button_init();
+    // ジョイスティックを初期化
+    joystick_init();
 
     // ディスプレイモジュールを初期化
     display_init();
@@ -33,24 +38,36 @@ void main(void) {
 
     // 描画バッファ取得
     uint8_t* displayBuffer = display_getDrawBuffer();
+  
+    // 表示を開始
+    display_setVisible(true);
+
+    // 格納先
+    int8_t stickX = 0;
+    int8_t stickY = 0;
+    uint16_t distance = 0;
+
+    // オブジェクト初期化
+    struct RenderObject* object = renderObjects;
+    object->isVisible = true;
+    object->width = 1;
+    object->height = 1;
 
     while (true) {
-        if (button_isPressed(RedButton)) {
-            displayBuffer[0] = 0xFF;
-        } else {
-            displayBuffer[0] = 0x00;
-        }
+        // オブジェクトをレンダリング
+        memset(displayBuffer, 0x00, 8);
+        renderer_renderObjects(displayBuffer);
 
-        if (button_isPressed(GreenButton)) {
-            displayBuffer[1] = 0xFF;
-        } else {
-            displayBuffer[1] = 0x00;
-        }
+        // 各ペリフェラルの更新を要求
+        distsens_requireUpdate();
+        joystick_requireUpdate();
 
-        if (button_isPressed(BlueButton)) {
-            displayBuffer[2] = 0xFF;
-        } else {
-            displayBuffer[2] = 0x00;
-        }
+        // 値を更新
+        joystick_getPosition(&stickX, &stickY);
+        distsens_getDistance(&distance);
+
+        // 移動
+        object->sx = (stickX + 7) >> 1;
+        object->sy = (stickY + 7) >> 1;
     }
 }

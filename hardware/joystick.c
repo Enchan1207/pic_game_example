@@ -7,8 +7,7 @@
 
 void joystick_init(void) {
     adc_init();
-    adc_requestConversion(JoyStickX);
-    adc_requestConversion(JoyStickY);
+    joystick_requireUpdate();
 }
 
 void joystick_requireUpdate(void) {

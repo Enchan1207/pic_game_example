@@ -5,6 +5,8 @@
 
 #include <xc.h>
 
+#include "display.h"
+
 /// @brief 最後にAD変換を要求されたチャネル
 static volatile ADCChannel currentChannel = None;
 
@@ -69,7 +71,7 @@ void adc_requestConversion(ADCChannel channel) {
 
 void adc_onUpdate(void) {
     // 選択中のチャネルが結果格納先の範囲外なら何もしない
-    if (currentChannel < ADC_AVAILABLE_CHANNELS) {
+    if (currentChannel >= ADC_AVAILABLE_CHANNELS) {
         return;
     }
 
@@ -79,7 +81,7 @@ void adc_onUpdate(void) {
 
 uint8_t adc_getValue(ADCChannel channel) {
     // チャネルが結果格納先の範囲外なら何もしない
-    if (channel < ADC_AVAILABLE_CHANNELS) {
+    if (channel >= ADC_AVAILABLE_CHANNELS) {
         return 0x00;
     }
     return _convResult[channel];

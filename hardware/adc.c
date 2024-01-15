@@ -8,6 +8,7 @@
 /// @brief 最後にAD変換を要求されたチャネル
 static volatile ADCChannel currentChannel = None;
 
+/// @brief チャネル別AD変換結果
 static volatile uint8_t _convResult[ADC_AVAILABLE_CHANNELS] = {0};
 
 void adc_init(void) {

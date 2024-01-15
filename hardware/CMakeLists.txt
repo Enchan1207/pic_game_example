@@ -7,6 +7,7 @@ add_library(hardware)
 target_sources(hardware PRIVATE
     adc.c
     display.c
+    distsens.c
 )
 target_include_directories(hardware PUBLIC
     ${PROJECT_SOURCE_DIR}/include/hardware

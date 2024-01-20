@@ -4,15 +4,15 @@
 #include "renderer.h"
 
 /// @brief オブジェクトリスト
-struct RenderObject renderObjects[RENDERER_MAX_OBJECT];
+struct RenderObject objects[RENDERER_MAX_OBJECT];
 
 void renderer_init(void) {
     for (uint8_t i = 0; i < RENDERER_MAX_OBJECT; i++) {
-        renderObjects[i].isVisible = false;
-        renderObjects[i].sx = 0;
-        renderObjects[i].sy = 0;
-        renderObjects[i].width = 0;
-        renderObjects[i].height = 0;
+        objects[i].isVisible = false;
+        objects[i].sx = 0;
+        objects[i].sy = 0;
+        objects[i].width = 0;
+        objects[i].height = 0;
     }
 }
 
@@ -67,9 +67,13 @@ static void _renderer_renderObject(uint8_t* displayBuffer, const struct RenderOb
     }
 }
 
-void renderer_renderObjects(uint8_t* displayBuffer) {
+struct RenderObject* renderer_getRenderObjects(void) {
+    return objects;
+}
+
+void renderer_drawObjects(uint8_t* displayBuffer) {
     for (uint8_t i = 0; i < RENDERER_MAX_OBJECT; i++) {
-        struct RenderObject* obj = renderObjects + i;
+        struct RenderObject* obj = objects + i;
         // 非表示オブジェクトなら飛ばす
         if (!obj->isVisible) {
             continue;

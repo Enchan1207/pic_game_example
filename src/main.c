@@ -56,15 +56,15 @@ void main(void) {
     uint16_t distance = 0;
 
     // オブジェクト初期化
-    struct RenderObject* object = renderObjects;
+    struct RenderObject* object = renderer_getRenderObjects();
     object->isVisible = true;
     object->width = 1;
     object->height = 1;
 
     while (true) {
-        // オブジェクトをレンダリング
+        // オブジェクト描画
         memset(displayBuffer, 0x00, 8);
-        renderer_renderObjects(displayBuffer);
+        renderer_drawObjects(displayBuffer);
 
         // 各ペリフェラルの更新を要求
         distsens_requireUpdate();

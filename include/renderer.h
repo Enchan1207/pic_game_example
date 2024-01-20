@@ -29,16 +29,21 @@ struct RenderObject {
     uint8_t height : 4;
 };
 
-extern struct RenderObject renderObjects[RENDERER_MAX_OBJECT];
-
 /**
  * @brief オブジェクトレンダラを初期化
  */
 void renderer_init(void);
 
 /**
- * @brief オブジェクトをバッファにレンダリング
+ * @brief オブジェクトレンダラが管理するオブジェクトリストへのポインタを返す
+ *
+ * @return struct RenderObject* オブジェクトリストへのポインタ
  */
-void renderer_renderObjects(uint8_t* displayBuffer);
+struct RenderObject* renderer_getRenderObjects(void);
+
+/**
+ * @brief オブジェクトをバッファに描画
+ */
+void renderer_drawObjects(uint8_t* displayBuffer);
 
 #endif /* RENDERER_H */

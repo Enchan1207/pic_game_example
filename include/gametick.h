@@ -30,8 +30,10 @@ void gametick_set(void);
 
 /**
  * @brief 次のゲームティックに入っているか調べる
+ *
+ * @return bool
  */
-void gametick_isTickEntered(void);
+bool gametick_isTickEntered(void);
 
 /**
  * @brief ゲームティック到達まで同期

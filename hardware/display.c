@@ -6,7 +6,10 @@
 #include <xc.h>
 
 /// @brief 表示バッファ
-static uint8_t displayBuffer[8];
+static uint8_t displayBuffer[2][8];
+
+/// @brief 現在操作しているバッファのインデックス
+static uint8_t currentBufferIndex = 0;
 
 /**
  * @brief ディスプレイバッファの初期化
@@ -82,19 +85,25 @@ void display_onUpdate(void) {
     _shiftColumn(column);
 
     // 列に対応するデータを設定
-    _setColumnData(displayBuffer[column]);
+    _setColumnData(displayBuffer[currentBufferIndex ^ 0x01][column]);
 
     // 次の列へ
     column = (column + 1) % 8;
 }
 
 uint8_t* display_getDrawBuffer(void) {
-    return displayBuffer;
+    return displayBuffer[currentBufferIndex];
+}
+
+void display_switchBuffer(void) {
+    currentBufferIndex ^= 0x01;
 }
 
 static void _initDisplayBuffer(void) {
-    for (uint8_t n = 0; n < 8; n++) {
-        displayBuffer[n] = 0;
+    for (uint8_t i = 0; i < 2; i++) {
+        for (uint8_t n = 0; n < 8; n++) {
+            displayBuffer[i][n] = 0;
+        }
     }
 }
 

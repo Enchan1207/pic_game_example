@@ -41,9 +41,6 @@ void main(void) {
     // 表示の有効化
     display_setVisible(true);
 
-    // 描画バッファ取得
-    uint8_t* displayBuffer = display_getDrawBuffer();
-
     // 表示を開始
     display_setVisible(true);
 
@@ -56,15 +53,17 @@ void main(void) {
     uint16_t distance = 0;
 
     // オブジェクト初期化
-    struct RenderObject* object = renderObjects;
+    struct RenderObject* object = renderer_getRenderObjects();
     object->isVisible = true;
     object->width = 1;
     object->height = 1;
 
     while (true) {
-        // オブジェクトをレンダリング
+        // オブジェクトを描画し、バッファの参照を切り替える
+        uint8_t* displayBuffer = display_getDrawBuffer();
         memset(displayBuffer, 0x00, 8);
-        renderer_renderObjects(displayBuffer);
+        renderer_drawObjects(displayBuffer);
+        display_switchBuffer();
 
         // 各ペリフェラルの更新を要求
         distsens_requireUpdate();

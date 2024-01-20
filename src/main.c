@@ -41,9 +41,6 @@ void main(void) {
     // 表示の有効化
     display_setVisible(true);
 
-    // 描画バッファ取得
-    uint8_t* displayBuffer = display_getDrawBuffer();
-
     // 表示を開始
     display_setVisible(true);
 
@@ -62,9 +59,11 @@ void main(void) {
     object->height = 1;
 
     while (true) {
-        // オブジェクト描画
+        // オブジェクトを描画し、バッファの参照を切り替える
+        uint8_t* displayBuffer = display_getDrawBuffer();
         memset(displayBuffer, 0x00, 8);
         renderer_drawObjects(displayBuffer);
+        display_switchBuffer();
 
         // 各ペリフェラルの更新を要求
         distsens_requireUpdate();

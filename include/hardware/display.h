@@ -33,4 +33,9 @@ void display_onUpdate(void);
  */
 uint8_t* display_getDrawBuffer(void);
 
+/**
+ * @brief 描画バッファと操作バッファを切り替える
+ */
+void display_switchBuffer(void);
+
 #endif /* DISPLAY_H */

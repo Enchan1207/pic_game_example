@@ -29,6 +29,11 @@ void gametick_stop(void);
 void gametick_set(void);
 
 /**
+ * @brief 次のゲームティックに入っているか調べる
+ */
+void gametick_isTickEntered(void);
+
+/**
  * @brief ゲームティック到達まで同期
  */
 void gametick_sync(void);

@@ -4,6 +4,7 @@
 #ifndef GAMETICK_H
 #define GAMETICK_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /**
@@ -32,6 +33,7 @@ void gametick_set(void);
  * @brief 次のゲームティックに入っているか調べる
  *
  * @return bool
+ * @note 突入していた場合は自動で内部フラグがクリアされます。
  */
 bool gametick_isTickEntered(void);
 

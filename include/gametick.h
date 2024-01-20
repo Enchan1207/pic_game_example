@@ -4,6 +4,7 @@
 #ifndef GAMETICK_H
 #define GAMETICK_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /**
@@ -27,6 +28,14 @@ void gametick_stop(void);
  * @note ISRから呼び出すことを想定しています。ゲームティックに到達したことを示す内部フラグを立てます。
  */
 void gametick_set(void);
+
+/**
+ * @brief 次のゲームティックに入っているか調べる
+ *
+ * @return bool
+ * @note 突入していた場合は自動で内部フラグがクリアされます。
+ */
+bool gametick_isTickEntered(void);
 
 /**
  * @brief ゲームティック到達まで同期

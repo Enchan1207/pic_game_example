@@ -59,30 +59,30 @@ void main(void) {
     object->height = 1;
 
     while (true) {
-        // オブジェクトを描画し、バッファの参照を切り替える
-        uint8_t* displayBuffer = display_getDrawBuffer();
-        memset(displayBuffer, 0x00, 8);
-        renderer_drawObjects(displayBuffer);
-        display_switchBuffer();
+        // ゲームティックに入ったら
+        if (gametick_isTickEntered()) {
+            // オブジェクトを描画し、バッファの参照を切り替える
+            uint8_t* displayBuffer = display_getDrawBuffer();
+            memset(displayBuffer, 0x00, 8);
+            renderer_drawObjects(displayBuffer);
+            display_switchBuffer();
 
-        // 各ペリフェラルの更新を要求
-        distsens_requireUpdate();
-        joystick_requireUpdate();
+            // 各ペリフェラルの更新を要求
+            distsens_requireUpdate();
+            joystick_requireUpdate();
 
-        // 値を更新
-        joystick_getPosition(&stickX, &stickY);
-        distsens_getDistance(&distance);
+            // 値を更新
+            joystick_getPosition(&stickX, &stickY);
+            distsens_getDistance(&distance);
 
-        // 移動
-        object->sx = (stickX + 7) >> 1;
-        object->sy = (stickY + 7) >> 1;
+            // 移動
+            object->sx = (stickX + 7) >> 1;
+            object->sy = (stickY + 7) >> 1;
 
-        // 1ゲームティックあたり16msなので、64回待つと大体1.024秒
-        if (gametick_getTickCount() % 64 == 0) {
-            object->width = (object->width + 1) % 4;
+            // 1ゲームティックあたり16msなので、64回待つと大体1.024秒
+            if (gametick_getTickCount() % 64 == 0) {
+                object->width = (object->width + 1) % 4;
+            }
         }
-
-        // 次のゲームティックに到達するまで待つ 割り込みは待機しない
-        gametick_sync();
     }
 }

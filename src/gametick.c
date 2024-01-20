@@ -37,6 +37,14 @@ void gametick_set(void) {
     tickCount++;
 }
 
+bool gametick_isTickEntered(void) {
+    if (isTickEntered) {
+        isTickEntered = false;
+        return true;
+    }
+    return false;
+}
+
 void gametick_sync(void) {
     while (!isTickEntered) {
     }

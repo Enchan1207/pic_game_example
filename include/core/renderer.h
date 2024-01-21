@@ -69,6 +69,9 @@ struct RenderObject {
 
             /// @brief 穴の大きさ
             uint8_t holeWidth : 4;
+
+            /// @brief 速度
+            uint8_t speed;
         } wall;
     } property;
 };

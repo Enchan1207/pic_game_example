@@ -46,9 +46,6 @@ void main(void) {
     // 表示の有効化
     display_setVisible(true);
 
-    // 表示を開始
-    display_setVisible(true);
-
     // ゲームティックを開始
     gametick_start();
 
@@ -85,9 +82,9 @@ void main(void) {
             // 移動
             player->sx = (stickX + 7) >> 1;
             player->sy = (stickY + 7) >> 1;
+        }
 
-            if ((gametick_getTickCount() % 64) == 0) {
-            }
+        if ((gametick_getTickCount() % 64) == 0) {
         }
     }
 }

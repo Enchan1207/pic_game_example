@@ -1,16 +1,18 @@
 //
-// ドットマトリクスディスプレイの制御
+// 避けゲー
 //
-#include <hardware/button.h>
-#include <hardware/display.h>
-#include <hardware/distsens.h>
-#include <hardware/joystick.h>
 #include <stdbool.h>
 #include <string.h>
 #include <xc.h>
 
 #include "gametick.h"
+#include "hardware/button.h"
+#include "hardware/display.h"
+#include "hardware/distsens.h"
+#include "hardware/joystick.h"
+#include "hardware/random.h"
 #include "renderer.h"
+#include "wall_escape/wall.h"
 
 void main(void) {
     // クロック設定
@@ -34,6 +36,9 @@ void main(void) {
     // オブジェクトレンダラ初期化
     renderer_init();
 
+    // 乱数生成器初期化
+    random_init();
+
     // グローバル割り込み有効化
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
@@ -47,6 +52,9 @@ void main(void) {
     // ゲームティックを開始
     gametick_start();
 
+    // 乱数シード設定
+    random_initSeed();
+
     // 格納先
     int8_t stickX = 0;
     int8_t stickY = 0;
@@ -56,20 +64,6 @@ void main(void) {
     struct RenderObject* player = renderer_getRenderObjectByID(0x07);
     player->isVisible = true;
     player->type = PlayerObject;
-
-    struct RenderObject* vWall = renderer_getRenderObjectByID(0x01);
-    vWall->isVisible = true;
-    vWall->type = VerticalWallObject;
-    vWall->sx = 1;
-    vWall->property.wall.holePosition = 2;
-    vWall->property.wall.holeWidth = 3;
-
-    struct RenderObject* hWall = renderer_getRenderObjectByID(0x02);
-    hWall->isVisible = true;
-    hWall->type = HorizontalWallObject;
-    hWall->sy = 1;
-    hWall->property.wall.holePosition = 2;
-    hWall->property.wall.holeWidth = 3;
 
     while (true) {
         // ゲームティックに入ったら
@@ -93,8 +87,6 @@ void main(void) {
             player->sy = (stickY + 7) >> 1;
 
             if ((gametick_getTickCount() % 64) == 0) {
-                vWall->sx = (vWall->sx + 1) % 16;
-                hWall->sy = (hWall->sy + 1) % 16;
             }
         }
     }

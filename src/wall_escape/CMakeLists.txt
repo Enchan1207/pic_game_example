@@ -8,6 +8,7 @@ target_sources(wall_escape PRIVATE
     config.c
     isrs.c
     main.c
+    wall.c
 )
 target_include_directories(wall_escape PUBLIC
     ${PROJECT_SOURCE_DIR}/include

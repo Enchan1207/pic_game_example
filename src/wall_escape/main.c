@@ -53,10 +53,23 @@ void main(void) {
     uint16_t distance = 0;
 
     // オブジェクト初期化
-    struct RenderObject* object = renderer_getRenderObjects();
-    object->isVisible = true;
-    object->type = NumberObject;
-    object->property.number.value = 4;
+    struct RenderObject* player = renderer_getRenderObjectByID(0x07);
+    player->isVisible = true;
+    player->type = PlayerObject;
+
+    struct RenderObject* vWall = renderer_getRenderObjectByID(0x01);
+    vWall->isVisible = true;
+    vWall->type = VerticalWallObject;
+    vWall->sx = 1;
+    vWall->property.wall.holePosition = 0;
+    vWall->property.wall.holeWidth = 2;
+
+    struct RenderObject* hWall = renderer_getRenderObjectByID(0x02);
+    hWall->isVisible = true;
+    hWall->type = HorizontalWallObject;
+    hWall->sy = 1;
+    hWall->property.wall.holePosition = 0;
+    hWall->property.wall.holeWidth = 5;
 
     while (true) {
         // ゲームティックに入ったら
@@ -76,12 +89,12 @@ void main(void) {
             distsens_getDistance(&distance);
 
             // 移動
-            object->sx = (stickX + 7) >> 1;
-            object->sy = (stickY + 7) >> 1;
+            player->sx = (stickX + 7) >> 1;
+            player->sy = (stickY + 7) >> 1;
 
-            // 1ゲームティックあたり16msなので、64回待つと大体1.024秒
-            if (gametick_getTickCount() % 32 == 0) {
-                object->property.number.value = (object->property.number.value + 1) & 0x0F;
+            if ((gametick_getTickCount() % 64) == 0) {
+                vWall->property.wall.holePosition = (vWall->property.wall.holePosition + 1) % 16;
+                hWall->property.wall.holePosition = (hWall->property.wall.holePosition + 1) % 16;
             }
         }
     }

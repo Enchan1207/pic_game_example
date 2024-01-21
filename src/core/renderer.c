@@ -180,6 +180,20 @@ struct RenderObject* renderer_getRenderObjectByID(uint8_t id) {
     return objects + id;
 }
 
+struct RenderObject* renderer_getFreeObject(void) {
+    for (uint8_t i = 0; i < RENDERER_MAX_OBJECT; i++) {
+        struct RenderObject* obj = objects + i;
+        if (!obj->isVisible) {
+            // 確保して描画範囲外に置いておく
+            obj->sx = 10;
+            obj->sy = 10;
+            obj->isVisible = true;
+            return obj;
+        }
+    }
+    return NULL;
+}
+
 void renderer_drawObjects(uint8_t* displayBuffer) {
     for (uint8_t i = 0; i < RENDERER_MAX_OBJECT; i++) {
         struct RenderObject* obj = objects + i;

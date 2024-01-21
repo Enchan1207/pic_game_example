@@ -96,6 +96,15 @@ struct RenderObject* renderer_getRenderObjects(void);
 struct RenderObject* renderer_getRenderObjectByID(uint8_t id);
 
 /**
+ * @brief フリーの描画オブジェクトを探して返す
+ *
+ * @return struct RenderObject* オブジェクトへのポインタ
+ *
+ * @note 内部オブジェクトテーブルがいっぱいの場合はnullが返ります。
+ */
+struct RenderObject* renderer_getFreeObject(void);
+
+/**
  * @brief オブジェクトをバッファに描画
  */
 void renderer_drawObjects(uint8_t* displayBuffer);

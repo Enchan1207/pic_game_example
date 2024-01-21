@@ -112,7 +112,7 @@ static void _drawHorizontalWall(uint8_t* displayBuffer, const struct RenderObjec
     // 穴の形状を把握
     uint8_t startX = (uint8_t)_clipValue(obj->property.wall.holePosition, 0, 8);
     uint8_t endX = (uint8_t)_clipValue((int8_t)(obj->property.wall.holePosition + obj->property.wall.holeWidth), 0, 8);
-    uint8_t wallShape = (uint8_t)(1 << (7 - obj->sy - 1));
+    uint8_t wallShape = (uint8_t)(1 << (7 - obj->sy));
 
     // 反映していく
     for (uint8_t x = 0; x < 8; x++) {
@@ -121,33 +121,6 @@ static void _drawHorizontalWall(uint8_t* displayBuffer, const struct RenderObjec
         } else {
             displayBuffer[x] |= wallShape;
         }
-    }
-}
-
-/**
- * @brief 矩形を描画
- *
- * @param displayBuffer ディスプレイバッファ
- * @param obj 描画対象のオブジェクト
- */
-static void _drawRect(uint8_t* displayBuffer, const struct RenderObject* obj) {
-    // 実際に描画される範囲を特定
-    uint8_t startX = (uint8_t)_clipValue(obj->sx, 0, 7);
-    uint8_t endX = (uint8_t)_clipValue(obj->sx + obj->property.rect.width, 0, 8);
-    uint8_t startY = (uint8_t)_clipValue(obj->sy, 0, 7);
-    uint8_t endY = (uint8_t)_clipValue(obj->sy + obj->property.rect.height, 0, 8);
-
-    // 描画サイズがゼロなら何もせず戻る
-    if (endX - startX == 0 || endY - startY == 0) {
-        return;
-    }
-
-    // バッファに反映
-    for (uint8_t x = startX; x < endX; x++) {
-        // y軸の終点-始点から1の数を求め、その分だけビットを立てた数値を生成
-        // height=3 の場合、1<<3 は 0b01000 1引いて 0b0111
-        // このままだとy軸が上下逆になってしまうので、差分を左シフト
-        displayBuffer[x] |= ((uint8_t)(1 << (endY - startY)) - 1) << (8 - endY);
     }
 }
 
@@ -219,10 +192,6 @@ void renderer_drawObjects(uint8_t* displayBuffer) {
 
             case HorizontalWallObject:
                 _drawHorizontalWall(displayBuffer, obj);
-                break;
-
-            case RectObject:
-                _drawRect(displayBuffer, obj);
                 break;
 
             case NumberObject:

@@ -13,16 +13,13 @@
  * @brief オブジェクトタイプ
  */
 typedef enum {
-    /// @brief 矩形
-    RectObject = 0,
-
-    /// @brief プレイヤーオブジェクト
+    /// @brief プレイヤー
     PlayerObject,
 
-    /// @brief 垂直壁オブジェクト
+    /// @brief 垂直壁
     VerticalWallObject,
 
-    /// @brief 水平壁オブジェクト
+    /// @brief 水平壁
     HorizontalWallObject,
 
     /// @brief 数値
@@ -47,15 +44,6 @@ struct RenderObject {
 
     /// @brief オブジェクトプロパティ
     union ObjectProperty {
-        /// @brief 矩形オブジェクト
-        struct {
-            /// @brief 幅
-            uint8_t width : 4;
-
-            /// @brief 高さ
-            uint8_t height : 4;
-        } rect;
-
         /// @brief 数値オブジェクト
         struct {
             /// @brief 表示する数値

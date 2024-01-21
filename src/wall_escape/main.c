@@ -12,6 +12,7 @@
 #include "hardware/joystick.h"
 #include "hardware/random.h"
 #include "renderer.h"
+#include "wall_escape/collision.h"
 #include "wall_escape/wall.h"
 
 void main(void) {
@@ -84,6 +85,11 @@ void main(void) {
 
             // 壁の位置を更新
             wall_updateWalls();
+
+            // TODO: 当たり判定とステート分岐
+            if (isPlayerCollidedWall()) {
+                gametick_stop();
+            }
 
             // スポーンレートごとに壁オブジェクトを生成
             if ((gametick_getTickCount() % wall_getSpawnRate()) == 0) {

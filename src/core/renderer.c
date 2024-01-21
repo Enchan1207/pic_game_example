@@ -112,7 +112,7 @@ static void _drawHorizontalWall(uint8_t* displayBuffer, const struct RenderObjec
     // 穴の形状を把握
     uint8_t startX = (uint8_t)_clipValue(obj->property.wall.holePosition, 0, 8);
     uint8_t endX = (uint8_t)_clipValue((int8_t)(obj->property.wall.holePosition + obj->property.wall.holeWidth), 0, 8);
-    uint8_t wallShape = (uint8_t)(1 << (7 - obj->sy - 1));
+    uint8_t wallShape = (uint8_t)(1 << (7 - obj->sy));
 
     // 反映していく
     for (uint8_t x = 0; x < 8; x++) {

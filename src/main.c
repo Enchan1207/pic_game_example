@@ -5,7 +5,6 @@
 #include <hardware/display.h>
 #include <hardware/distsens.h>
 #include <hardware/joystick.h>
-#include <hardware/random.h>
 #include <stdbool.h>
 #include <string.h>
 #include <xc.h>
@@ -35,9 +34,6 @@ void main(void) {
     // オブジェクトレンダラ初期化
     renderer_init();
 
-    // 乱数生成器初期化
-    random_init();
-
     // グローバル割り込み有効化
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
@@ -51,9 +47,6 @@ void main(void) {
     // ゲームティックを開始
     gametick_start();
 
-    // 本当はゲーム開始時とかにシード設定したい
-    random_initSeed();
-
     // 格納先
     int8_t stickX = 0;
     int8_t stickY = 0;
@@ -62,10 +55,8 @@ void main(void) {
     // オブジェクト初期化
     struct RenderObject* object = renderer_getRenderObjects();
     object->isVisible = true;
-    object->width = 1;
-    object->height = 1;
-
-    uint8_t randomValue = 0;
+    object->type = NumberObject;
+    object->property.number.value = 4;
 
     while (true) {
         // ゲームティックに入ったら
@@ -73,8 +64,7 @@ void main(void) {
             // オブジェクトを描画し、バッファの参照を切り替える
             uint8_t* displayBuffer = display_getDrawBuffer();
             memset(displayBuffer, 0x00, 8);
-            // renderer_drawObjects(displayBuffer);
-            displayBuffer[0] = randomValue;
+            renderer_drawObjects(displayBuffer);
             display_switchBuffer();
 
             // 各ペリフェラルの更新を要求
@@ -90,9 +80,8 @@ void main(void) {
             object->sy = (stickY + 7) >> 1;
 
             // 1ゲームティックあたり16msなので、64回待つと大体1.024秒
-            if (gametick_getTickCount() % 64 == 0) {
-                randomValue = random_next();
-                object->width = (object->width + 1) % 4;
+            if (gametick_getTickCount() % 32 == 0) {
+                object->property.number.value = (object->property.number.value + 1) & 0x0F;
             }
         }
     }

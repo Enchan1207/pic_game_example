@@ -61,15 +61,15 @@ void main(void) {
     vWall->isVisible = true;
     vWall->type = VerticalWallObject;
     vWall->sx = 1;
-    vWall->property.wall.holePosition = 0;
-    vWall->property.wall.holeWidth = 2;
+    vWall->property.wall.holePosition = 2;
+    vWall->property.wall.holeWidth = 3;
 
     struct RenderObject* hWall = renderer_getRenderObjectByID(0x02);
     hWall->isVisible = true;
     hWall->type = HorizontalWallObject;
     hWall->sy = 1;
-    hWall->property.wall.holePosition = 0;
-    hWall->property.wall.holeWidth = 5;
+    hWall->property.wall.holePosition = 2;
+    hWall->property.wall.holeWidth = 3;
 
     while (true) {
         // ゲームティックに入ったら
@@ -93,8 +93,8 @@ void main(void) {
             player->sy = (stickY + 7) >> 1;
 
             if ((gametick_getTickCount() % 64) == 0) {
-                vWall->property.wall.holePosition = (vWall->property.wall.holePosition + 1) % 16;
-                hWall->property.wall.holePosition = (hWall->property.wall.holePosition + 1) % 16;
+                vWall->sx = (vWall->sx + 1) % 16;
+                hWall->sy = (hWall->sy + 1) % 16;
             }
         }
     }

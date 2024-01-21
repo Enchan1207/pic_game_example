@@ -56,7 +56,6 @@ void main(void) {
         // オブジェクトを描画し、バッファの参照を切り替える
         uint8_t* displayBuffer = display_getDrawBuffer();
         memset(displayBuffer, 0x00, 8);
-        displayBuffer[0] = gameState;
         renderer_drawObjects(displayBuffer);
         display_switchBuffer();
 

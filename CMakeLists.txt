@@ -1,5 +1,5 @@
 #
-# display_control
+# pic_game_example
 #
 cmake_minimum_required(VERSION 3.21)
 
@@ -18,8 +18,8 @@ set(PIC_MCU "16F1936")
 set(PIC_FCPU 4000000)
 
 # プロジェクト設定
-project(display_control
-    VERSION 0.1.0
+project(pic_game_example
+    VERSION 1.0.0
     DESCRIPTION "Simple games"
     LANGUAGES C
 )

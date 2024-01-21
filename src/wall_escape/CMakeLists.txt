@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.21)
 
 add_executable(wall_escape)
 target_sources(wall_escape PRIVATE
+    collision.c
     config.c
     isrs.c
     main.c

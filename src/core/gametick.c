@@ -19,17 +19,16 @@ void gametick_init(void) {
     // コンペアマッチするまでの値を設定 -> 250 * 64 = 16000us = 16msごとに割り込み
     PR2 = 249;
 
-    // タイマを開始(割り込みは許可しない)
-    TMR2IE = 0;
-    T2CONbits.TMR2ON = 1;
-}
-
-void gametick_start(void) {
+    // タイマ割り込みを有効化
     TMR2IE = 1;
 }
 
+void gametick_start(void) {
+    T2CONbits.TMR2ON = 1;
+}
+
 void gametick_stop(void) {
-    TMR2IE = 0;
+    T2CONbits.TMR2ON = 0;
 }
 
 void gametick_set(void) {

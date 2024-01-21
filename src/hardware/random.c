@@ -32,3 +32,8 @@ uint8_t random_next(void) {
 
     return x & 0xFF;
 }
+
+uint8_t random_randRange(uint8_t min, uint8_t max) {
+    int n = random_next() % (max - min + 1) + min;
+    return (uint8_t)n;
+}

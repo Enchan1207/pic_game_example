@@ -16,8 +16,17 @@ typedef enum {
     /// @brief 矩形
     RectObject = 0,
 
+    /// @brief プレイヤーオブジェクト
+    PlayerObject,
+
+    /// @brief 垂直壁オブジェクト
+    VerticalWallObject,
+
+    /// @brief 水平壁オブジェクト
+    HorizontalWallObject,
+
     /// @brief 数値
-    NumberObject = 1
+    NumberObject
 } RenderObjectType;
 
 /**
@@ -52,6 +61,18 @@ struct RenderObject {
             /// @brief 表示する数値
             uint8_t value : 4;
         } number;
+
+        /// @brief 壁オブジェクト
+        struct {
+            /// @brief 穴の相対位置
+            uint8_t holePosition : 4;
+
+            /// @brief 穴の大きさ
+            uint8_t holeWidth : 4;
+
+            /// @brief 速度
+            uint8_t speed;
+        } wall;
     } property;
 };
 
@@ -66,6 +87,25 @@ void renderer_init(void);
  * @return struct RenderObject* オブジェクトリストへのポインタ
  */
 struct RenderObject* renderer_getRenderObjects(void);
+
+/**
+ * @brief IDを指定してオブジェクトへのポインタを取得
+ *
+ * @param id オブジェクトID
+ * @return struct RenderObject* オブジェクトへのポインタ
+ *
+ * @note 範囲外参照に対してはNULLを返します。
+ */
+struct RenderObject* renderer_getRenderObjectByID(uint8_t id);
+
+/**
+ * @brief フリーの描画オブジェクトを探して返す
+ *
+ * @return struct RenderObject* オブジェクトへのポインタ
+ *
+ * @note 内部オブジェクトテーブルがいっぱいの場合はnullが返ります。
+ */
+struct RenderObject* renderer_getFreeObject(void);
 
 /**
  * @brief オブジェクトをバッファに描画

@@ -1,16 +1,18 @@
 //
-// ドットマトリクスディスプレイの制御
+// 避けゲー
 //
-#include <hardware/button.h>
-#include <hardware/display.h>
-#include <hardware/distsens.h>
-#include <hardware/joystick.h>
 #include <stdbool.h>
 #include <string.h>
 #include <xc.h>
 
 #include "gametick.h"
+#include "hardware/button.h"
+#include "hardware/display.h"
+#include "hardware/distsens.h"
+#include "hardware/joystick.h"
+#include "hardware/random.h"
 #include "renderer.h"
+#include "wall_escape/wall.h"
 
 void main(void) {
     // クロック設定
@@ -34,6 +36,12 @@ void main(void) {
     // オブジェクトレンダラ初期化
     renderer_init();
 
+    // 乱数生成器初期化
+    random_init();
+
+    // 壁生成器初期化
+    wall_init();
+
     // グローバル割り込み有効化
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
@@ -41,22 +49,23 @@ void main(void) {
     // 表示の有効化
     display_setVisible(true);
 
-    // 表示を開始
-    display_setVisible(true);
-
     // ゲームティックを開始
     gametick_start();
 
-    // 格納先
+    // 乱数シード設定
+    random_initSeed();
+
+    // ジョイスティックの値
     int8_t stickX = 0;
     int8_t stickY = 0;
-    uint16_t distance = 0;
+
+    // 壁の出現頻度と通過した壁の数
+    uint8_t wallSpawnRate = 128;
 
     // オブジェクト初期化
-    struct RenderObject* object = renderer_getRenderObjects();
-    object->isVisible = true;
-    object->type = NumberObject;
-    object->property.number.value = 4;
+    struct RenderObject* player = renderer_getRenderObjectByID(0x07);
+    player->isVisible = true;
+    player->type = PlayerObject;
 
     while (true) {
         // ゲームティックに入ったら
@@ -67,21 +76,18 @@ void main(void) {
             renderer_drawObjects(displayBuffer);
             display_switchBuffer();
 
-            // 各ペリフェラルの更新を要求
-            distsens_requireUpdate();
+            // プレイヤーの位置を更新
             joystick_requireUpdate();
-
-            // 値を更新
             joystick_getPosition(&stickX, &stickY);
-            distsens_getDistance(&distance);
+            player->sx = (stickX + 7) >> 1;
+            player->sy = (stickY + 7) >> 1;
 
-            // 移動
-            object->sx = (stickX + 7) >> 1;
-            object->sy = (stickY + 7) >> 1;
+            // 壁の位置を更新
+            wall_updateWalls();
 
-            // 1ゲームティックあたり16msなので、64回待つと大体1.024秒
-            if (gametick_getTickCount() % 32 == 0) {
-                object->property.number.value = (object->property.number.value + 1) & 0x0F;
+            // スポーンレートごとに壁オブジェクトを生成
+            if ((gametick_getTickCount() % wall_getSpawnRate()) == 0) {
+                wall_generateNewWall();
             }
         }
     }

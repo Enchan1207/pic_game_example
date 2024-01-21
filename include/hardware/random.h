@@ -25,4 +25,13 @@ void random_initSeed(void);
  */
 uint8_t random_next(void);
 
+/**
+ * @brief ある範囲の乱数を生成する
+ *
+ * @param min 最小値
+ * @param max 最大値
+ * @return uint8_t 生成結果
+ */
+uint8_t random_randRange(uint8_t min, uint8_t max);
+
 #endif /* RANDOM_H */

@@ -3,6 +3,8 @@
 //
 #include "renderer.h"
 
+#include <stdio.h>
+
 /// @brief オブジェクトリスト
 struct RenderObject objects[RENDERER_MAX_OBJECT];
 
@@ -54,7 +56,76 @@ static int8_t _clipValue(int8_t n, int8_t min, int8_t max) {
 }
 
 /**
- * @brief オブジェクトをディスプレイバッファに描画
+ * @brief プレイヤーを描画
+ *
+ * @param displayBuffer ディスプレイバッファ
+ * @param obj 描画対象のオブジェクト
+ */
+static void _drawPlayer(uint8_t* displayBuffer, const struct RenderObject* obj) {
+    // 描画範囲外なら戻る
+    if (obj->sx < 0 || obj->sy < 0) {
+        return;
+    }
+
+    displayBuffer[obj->sx] |= 1 << (7 - obj->sy);
+}
+
+/**
+ * @brief 垂直壁を描画
+ *
+ * @param displayBuffer ディスプレイバッファ
+ * @param obj 描画対象のオブジェクト
+ */
+static void _drawVerticalWall(uint8_t* displayBuffer, const struct RenderObject* obj) {
+    // 描画範囲外なら戻る
+    if (obj->sx < 0) {
+        return;
+    }
+
+    // オブジェクトプロパティから壁の形状を把握
+    uint8_t startY = (uint8_t)_clipValue(obj->property.wall.holePosition, 0, 8);
+    uint8_t endY = (uint8_t)_clipValue((int8_t)(obj->property.wall.holePosition + obj->property.wall.holeWidth), 0, 8);
+    uint8_t wallShape = (uint8_t)(((1 << (endY - startY)) - 1) << (8 - endY));
+
+    // 高さゼロなら戻る
+    if (endY - startY == 0) {
+        displayBuffer[obj->sx] = 0xFF;
+        return;
+    }
+
+    // 描画 今作った1の列が穴になるのでビット反転
+    displayBuffer[obj->sx] = ~wallShape;
+}
+
+/**
+ * @brief 水平壁を描画
+ *
+ * @param displayBuffer ディスプレイバッファ
+ * @param obj 描画対象のオブジェクト
+ */
+static void _drawHorizontalWall(uint8_t* displayBuffer, const struct RenderObject* obj) {
+    // 描画範囲外なら戻る
+    if (obj->sy < 0) {
+        return;
+    }
+
+    // 穴の形状を把握
+    uint8_t startX = (uint8_t)_clipValue(obj->property.wall.holePosition, 0, 8);
+    uint8_t endX = (uint8_t)_clipValue((int8_t)(obj->property.wall.holePosition + obj->property.wall.holeWidth), 0, 8);
+    uint8_t wallShape = (uint8_t)(1 << (7 - obj->sy - 1));
+
+    // 反映していく
+    for (uint8_t x = 0; x < 8; x++) {
+        if (x >= startX && x < endX) {
+            displayBuffer[x] &= ~wallShape;
+        } else {
+            displayBuffer[x] |= wallShape;
+        }
+    }
+}
+
+/**
+ * @brief 矩形を描画
  *
  * @param displayBuffer ディスプレイバッファ
  * @param obj 描画対象のオブジェクト
@@ -81,7 +152,7 @@ static void _drawRect(uint8_t* displayBuffer, const struct RenderObject* obj) {
 }
 
 /**
- * @brief 数値をディスプレイバッファに描画
+ * @brief 数値を描画
  *
  * @param displayBuffer ディスプレイバッファ
  * @param obj 描画するオブジェクト
@@ -102,6 +173,27 @@ struct RenderObject* renderer_getRenderObjects(void) {
     return objects;
 }
 
+struct RenderObject* renderer_getRenderObjectByID(uint8_t id) {
+    if (id >= RENDERER_MAX_OBJECT) {
+        return NULL;
+    }
+    return objects + id;
+}
+
+struct RenderObject* renderer_getFreeObject(void) {
+    for (uint8_t i = 0; i < RENDERER_MAX_OBJECT; i++) {
+        struct RenderObject* obj = objects + i;
+        if (!obj->isVisible) {
+            // 確保して描画範囲外に置いておく
+            obj->sx = 10;
+            obj->sy = 10;
+            obj->isVisible = true;
+            return obj;
+        }
+    }
+    return NULL;
+}
+
 void renderer_drawObjects(uint8_t* displayBuffer) {
     for (uint8_t i = 0; i < RENDERER_MAX_OBJECT; i++) {
         struct RenderObject* obj = objects + i;
@@ -117,6 +209,18 @@ void renderer_drawObjects(uint8_t* displayBuffer) {
 
         // タイプで分岐
         switch (obj->type) {
+            case PlayerObject:
+                _drawPlayer(displayBuffer, obj);
+                break;
+
+            case VerticalWallObject:
+                _drawVerticalWall(displayBuffer, obj);
+                break;
+
+            case HorizontalWallObject:
+                _drawHorizontalWall(displayBuffer, obj);
+                break;
+
             case RectObject:
                 _drawRect(displayBuffer, obj);
                 break;

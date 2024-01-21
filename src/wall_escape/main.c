@@ -69,6 +69,9 @@ void main(void) {
         // ゲームステートによって分岐
         switch (gameState) {
             case Ready:
+                // プレイヤーを表示
+                player->isVisible = true;
+
                 // キー入力待ち
                 if (!button_isTyped(RedButton)) {
                     break;
@@ -76,9 +79,6 @@ void main(void) {
 
                 // 乱数シードを設定
                 random_initSeed();
-
-                // プレイヤーを表示
-                player->isVisible = true;
 
                 gameState = Playing;
                 break;
@@ -100,6 +100,9 @@ void main(void) {
                 break;
 
             case Gameover:
+                // プレイヤーを隠す
+                player->isVisible = false;
+
                 // キー入力待ち
                 if (!button_isTyped(RedButton)) {
                     break;
@@ -113,13 +116,10 @@ void main(void) {
                     obj->sy = -1;
                 }
 
-                // TODO: スコアを表示する
+                // 壁の状態をリセット
+                wall_init();
 
-                // キー入力待ち
-                if (!button_isTyped(RedButton)) {
-                    break;
-                }
-
+                // 状態遷移
                 gameState = Ready;
                 break;
         }

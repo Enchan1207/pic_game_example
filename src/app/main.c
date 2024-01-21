@@ -5,15 +5,16 @@
 #include <string.h>
 #include <xc.h>
 
+#include "app/collision.h"
+#include "app/state.h"
+#include "app/wall.h"
 #include "core/gametick.h"
 #include "core/renderer.h"
 #include "hardware/button.h"
 #include "hardware/display.h"
+#include "hardware/distsens.h"
 #include "hardware/joystick.h"
 #include "hardware/random.h"
-#include "wall_escape/collision.h"
-#include "wall_escape/state.h"
-#include "wall_escape/wall.h"
 
 void main(void) {
     // クロック設定
@@ -26,6 +27,7 @@ void main(void) {
     button_init();
     gametick_init();
     joystick_init();
+    distsens_init();
     display_init();
     renderer_init();
     random_init();
@@ -46,6 +48,9 @@ void main(void) {
     int8_t stickX = 0;
     int8_t stickY = 0;
 
+    // 距離センサの値
+    uint16_t distance = 0;
+
     // プレイヤーオブジェクト
     struct RenderObject* player = renderer_getRenderObjectByID(0x07);
     player->isVisible = true;
@@ -60,10 +65,21 @@ void main(void) {
         display_switchBuffer();
 
         // プレイヤーの位置を更新
+#ifndef FLAPPY_BIRD
         joystick_requireUpdate();
         joystick_getPosition(&stickX, &stickY);
         player->sx = (stickX + 7) >> 1;
         player->sy = (stickY + 7) >> 1;
+#else
+        distsens_requireUpdate();
+        distsens_getDistance(&distance);
+        player->sx = 2;
+        uint8_t dist = ((distance & 0xFF) >> 5) - 1;
+        if (dist > 7) {
+            dist = 7;
+        }
+        player->sy = (int8_t)dist;
+#endif
 
         // ゲームステートによって分岐
         switch (gameState) {

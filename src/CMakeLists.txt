@@ -8,4 +8,4 @@ add_subdirectory(core)
 add_subdirectory(hardware)
 
 # 避けゲー
-add_subdirectory(wall_escape)
+add_subdirectory(app)

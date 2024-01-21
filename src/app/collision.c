@@ -2,7 +2,7 @@
 // オブジェクトとの衝突
 //
 
-#include "wall_escape/collision.h"
+#include "app/collision.h"
 
 #include "core/renderer.h"
 

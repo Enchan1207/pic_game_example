@@ -20,12 +20,9 @@ set(PIC_FCPU 4000000)
 # プロジェクト設定
 project(display_control
     VERSION 0.1.0
-    DESCRIPTION "Dotmatrix display control example"
+    DESCRIPTION "Simple games"
     LANGUAGES C
 )
-
-# ハードウェアライブラリ
-add_subdirectory(hardware)
 
 # ソースディレクトリ
 add_subdirectory(src)

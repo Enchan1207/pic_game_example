@@ -1,11 +1,12 @@
 //
 // ISR
 //
-#include <hardware/adc.h>
-#include <hardware/display.h>
 #include <xc.h>
 
-#include "gametick.h"
+#include "core/gametick.h"
+#include "hardware/adc.h"
+#include "hardware/button.h"
+#include "hardware/display.h"
 
 void __interrupt() Interrupt_interrupt(void) {
     // ディスプレイ描画更新タイマ
@@ -24,5 +25,17 @@ void __interrupt() Interrupt_interrupt(void) {
     if (TMR2IF) {
         gametick_set();
         TMR2IF = 0;
+    }
+
+    // 赤ボタン
+    if (IOCBFbits.IOCBF3) {
+        button_setInterrupted(RedButton);
+        IOCBFbits.IOCBF3 = 0;
+    }
+
+    // 緑ボタン
+    if (IOCBFbits.IOCBF4) {
+        button_setInterrupted(GreenButton);
+        IOCBFbits.IOCBF4 = 0;
     }
 }

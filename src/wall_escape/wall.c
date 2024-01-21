@@ -37,7 +37,7 @@ bool wall_generateNewWall(void) {
     obj->sy = 0;
     int8_t* objPos = obj->type == VerticalWallObject ? &(obj->sx) : &(obj->sy);
     *objPos = 8;
-    obj->property.wall.holeWidth = random_randRange(3, 5);
+    obj->property.wall.holeWidth = random_randRange(2, 4);
     obj->property.wall.holePosition = random_randRange(0, 7 - obj->property.wall.holeWidth);
     obj->property.wall.speed = wallSpeed;
     obj->isVisible = true;

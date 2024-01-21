@@ -34,4 +34,20 @@ void button_init(void);
  */
 bool button_isPressed(Button button);
 
+/**
+ * @brief 特定のボタンに割り込みがあったことを通知する
+ *
+ * @param button
+ * @note BlueButtonを引数に呼び出した場合は何もしません。ISRでの実行を想定しています。
+ */
+void button_setInterrupted(Button button);
+
+/**
+ * @brief 特定のボタンの外部割り込みがあったかを返す
+ *
+ * @param button
+ * @note BlueButtonを引数に呼び出した場合は常にfalseが返ります。
+ */
+bool button_isTyped(Button button);
+
 #endif /* BUTTON_H */

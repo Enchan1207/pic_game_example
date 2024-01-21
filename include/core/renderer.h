@@ -68,6 +68,16 @@ void renderer_init(void);
 struct RenderObject* renderer_getRenderObjects(void);
 
 /**
+ * @brief IDを指定してオブジェクトへのポインタを取得
+ *
+ * @param id オブジェクトID
+ * @return struct RenderObject* オブジェクトへのポインタ
+ *
+ * @note 範囲外参照に対してはNULLを返します。
+ */
+struct RenderObject* renderer_getRenderObjectByID(uint8_t id);
+
+/**
  * @brief オブジェクトをバッファに描画
  */
 void renderer_drawObjects(uint8_t* displayBuffer);

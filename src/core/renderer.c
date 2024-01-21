@@ -3,6 +3,8 @@
 //
 #include "renderer.h"
 
+#include <stdio.h>
+
 /// @brief オブジェクトリスト
 struct RenderObject objects[RENDERER_MAX_OBJECT];
 
@@ -100,6 +102,13 @@ static void _drawNumber(uint8_t* displayBuffer, const struct RenderObject* obj) 
 
 struct RenderObject* renderer_getRenderObjects(void) {
     return objects;
+}
+
+struct RenderObject* renderer_getRenderObjectByID(uint8_t id) {
+    if (id >= RENDERER_MAX_OBJECT) {
+        return NULL;
+    }
+    return objects + id;
 }
 
 void renderer_drawObjects(uint8_t* displayBuffer) {

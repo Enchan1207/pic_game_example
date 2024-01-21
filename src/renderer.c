@@ -90,13 +90,11 @@ static void _drawNumber(uint8_t* displayBuffer, const struct RenderObject* obj) 
     // 描画範囲を取得 数値は 3*7
     uint8_t startX = (uint8_t)_clipValue(obj->sx, 0, 7);
     uint8_t endX = (uint8_t)_clipValue(obj->sx + 3, 0, 8);
-    uint8_t startY = (uint8_t)_clipValue(obj->sy, 0, 7);
-    uint8_t endY = (uint8_t)_clipValue(obj->sy + 7, 0, 8);
 
     for (uint8_t x = startX; x < endX; x++) {
         // 相対描画位置を取得して出力
         uint8_t colIndex = x - startX;
-        displayBuffer[x] |= numPattern[obj->property.number.value][colIndex] << (8 - endY);
+        displayBuffer[x] |= numPattern[obj->property.number.value][colIndex];
     }
 }
 

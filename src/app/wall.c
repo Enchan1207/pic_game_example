@@ -1,7 +1,7 @@
 //
 // 壁の生成と移動
 //
-#include "wall_escape/wall.h"
+#include "app/wall.h"
 
 #include <stdio.h>
 
@@ -32,7 +32,12 @@ bool wall_generateNewWall(void) {
     }
 
     // タイプと速度を設定し、初期位置に移動
+    // フラッピーバードの場合は垂直壁のみ
+#ifndef FLAPPY_BIRD
     obj->type = (random_next() % 2) == 0 ? VerticalWallObject : HorizontalWallObject;
+#else
+    obj->type = VerticalWallObject;
+#endif
     obj->sx = 0;
     obj->sy = 0;
     int8_t* objPos = obj->type == VerticalWallObject ? &(obj->sx) : &(obj->sy);

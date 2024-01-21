@@ -16,8 +16,17 @@ typedef enum {
     /// @brief 矩形
     RectObject = 0,
 
+    /// @brief プレイヤーオブジェクト
+    PlayerObject,
+
+    /// @brief 垂直壁オブジェクト
+    VerticalWallObject,
+
+    /// @brief 水平壁オブジェクト
+    HorizontalWallObject,
+
     /// @brief 数値
-    NumberObject = 1
+    NumberObject
 } RenderObjectType;
 
 /**
@@ -52,6 +61,15 @@ struct RenderObject {
             /// @brief 表示する数値
             uint8_t value : 4;
         } number;
+
+        /// @brief 壁オブジェクト
+        struct {
+            /// @brief 穴の相対位置
+            uint8_t holePosition : 4;
+
+            /// @brief 穴の大きさ
+            uint8_t holeWidth : 4;
+        } wall;
     } property;
 };
 

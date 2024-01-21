@@ -39,6 +39,9 @@ void main(void) {
     // 乱数生成器初期化
     random_init();
 
+    // 壁生成器初期化
+    wall_init();
+
     // グローバル割り込み有効化
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
@@ -52,10 +55,12 @@ void main(void) {
     // 乱数シード設定
     random_initSeed();
 
-    // 格納先
+    // ジョイスティックの値
     int8_t stickX = 0;
     int8_t stickY = 0;
-    uint16_t distance = 0;
+
+    // 壁の出現頻度と通過した壁の数
+    uint8_t wallSpawnRate = 128;
 
     // オブジェクト初期化
     struct RenderObject* player = renderer_getRenderObjectByID(0x07);
@@ -71,20 +76,19 @@ void main(void) {
             renderer_drawObjects(displayBuffer);
             display_switchBuffer();
 
-            // 各ペリフェラルの更新を要求
-            distsens_requireUpdate();
+            // プレイヤーの位置を更新
             joystick_requireUpdate();
-
-            // 値を更新
             joystick_getPosition(&stickX, &stickY);
-            distsens_getDistance(&distance);
-
-            // 移動
             player->sx = (stickX + 7) >> 1;
             player->sy = (stickY + 7) >> 1;
-        }
 
-        if ((gametick_getTickCount() % 64) == 0) {
+            // 壁の位置を更新
+            wall_updateWalls();
+
+            // スポーンレートごとに壁オブジェクトを生成
+            if ((gametick_getTickCount() % wall_getSpawnRate()) == 0) {
+                wall_generateNewWall();
+            }
         }
     }
 }
